@@ -21,5 +21,8 @@ class Settings(BaseSettings):
     PG_PASSWORD: str
     PG_DATABASE: str
 
+    SECRET_KEY: str
+    ACCESS_TOKEN_EXPIRE_MINUTES: int
+
 
 settings = Settings()
