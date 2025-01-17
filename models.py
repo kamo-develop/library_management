@@ -11,6 +11,7 @@ class UserRole(enum.Enum):
     READER = "reader"
     ADMIN = "admin"
 
+
 UserRoleType: Enum = Enum(
     UserRole,
     name="user_role_type",
@@ -18,6 +19,7 @@ UserRoleType: Enum = Enum(
     metadata=Base.metadata,
     validate_strings=True,
 )
+
 
 class User(Base):
     __tablename__ = "user_account"
@@ -28,5 +30,5 @@ class User(Base):
     role: Mapped[UserRoleType] = mapped_column(UserRoleType, default=UserRole.READER)
 
     def __repr__(self) -> str:
-        return f"User(id={self.id!r}, username={self.username!r}, fullname={self.fullname!r}), role={self.role!r}"
+        return f"User(id={self.id!r}, username={self.username!r}, fullname={self.fullname!r}, role={self.role!r})"
 

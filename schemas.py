@@ -8,13 +8,16 @@ class SUserRegister(BaseModel):
     fullname: str | None = None
     password: str
 
+
 class SUser(BaseModel):
     username: str
     fullname: str | None = None
     role: UserRole
 
-    # class Config:
-    #     from_attributes = True
+
+class SToken(BaseModel):
+    access_token: str
+    token_type: str
 
 
 

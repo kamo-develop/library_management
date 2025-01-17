@@ -22,6 +22,7 @@ class Settings(BaseSettings):
     PG_DATABASE: str
 
     SECRET_KEY: str
+    ALGORITHM: str
     ACCESS_TOKEN_EXPIRE_MINUTES: int
 
 
