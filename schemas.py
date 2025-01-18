@@ -15,6 +15,10 @@ class SUser(BaseModel):
     role: UserRole
 
 
+class SUserUpdate(BaseModel):
+    fullname: str
+
+
 class SToken(BaseModel):
     access_token: str
     token_type: str

@@ -1,9 +1,9 @@
 from fastapi import FastAPI
-from user.auth import router as auth_router
+from user.user_routes import router as auth_router
 import logging
 import uvicorn
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 app = FastAPI()
