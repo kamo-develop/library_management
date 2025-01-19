@@ -6,7 +6,7 @@ from sqlalchemy import pool
 from alembic import context
 
 from database import Base, PG_URL
-from models import User, UserRole
+from models import User, UserRole, Book, Author
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

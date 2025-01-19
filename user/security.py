@@ -6,7 +6,7 @@ from passlib.context import CryptContext
 from config import settings
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="user/login")
 
 
 def create_access_token(data: dict):
