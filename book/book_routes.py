@@ -1,11 +1,12 @@
-from fastapi import APIRouter, HTTPException, status, Depends
 import logging
-from sqlalchemy.ext.asyncio import AsyncSession
+
+from fastapi import APIRouter
 
 from deps import SessionDep, CurrentUserDep
 from schemas import SBookCreate, SBook, SBookUpdate
 from user.role_checker import AdminOnlyAccess
 from .book_service import BookService
+from .borrowing_service import BorrowingService
 
 logger = logging.getLogger(__name__)
 

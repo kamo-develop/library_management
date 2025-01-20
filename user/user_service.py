@@ -5,6 +5,7 @@ from sqlalchemy import select, delete
 import logging
 from jose import JWTError, jwt
 from config import settings
+from exceptions import UserNotFoundException
 from models import User
 from schemas import SUserRegister, SUserUpdate
 from utils import copy_model_attributes
@@ -25,11 +26,6 @@ class UserService:
         return (await session.execute(select(User).filter(User.username == username))).scalars().first()
 
     @classmethod
-    async def get_user_by_id(cls, session: AsyncSession, user_id) -> User:
-        """Ищет пользователя по логину"""
-        return (await session.execute(select(User).filter(User.id == user_id))).scalars().first()
-
-    @classmethod
     async def create_user(cls, session: AsyncSession, user_register: SUserRegister) -> User:
         hashed_password = get_password_hash(user_register.password)
         new_user = User(username=user_register.username, fullname=user_register.fullname, password=hashed_password)
@@ -48,7 +44,10 @@ class UserService:
 
     @classmethod
     async def delete_user_by_id(cls, session: AsyncSession, user_id: int):
-        await session.execute(delete(User).where(User.id == user_id))
+        user = await session.get(User, user_id)
+        if not user:
+            raise UserNotFoundException
+        await session.delete(user)
         await session.commit()
 
     @classmethod

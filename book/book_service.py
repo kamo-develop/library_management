@@ -1,5 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, delete
+
+from exceptions import BookNotFoundException
 from models import Author, Book
 from schemas import SBookCreate, SBookUpdate
 from fastapi import HTTPException, status
@@ -8,11 +10,8 @@ from utils import copy_model_attributes
 
 logger = logging.getLogger(__name__)
 
+
 class BookService:
-    book_not_found = HTTPException(
-        status_code=status.HTTP_404_NOT_FOUND,
-        detail="Book not found"
-    )
 
     authors_not_found = HTTPException(
         status_code=status.HTTP_404_NOT_FOUND,
@@ -38,9 +37,7 @@ class BookService:
 
     @classmethod
     async def update_book(cls, session: AsyncSession, book_id: int, book_update: SBookUpdate) -> Book:
-        book = await session.get(Book, book_id)
-        if not book:
-            raise cls.book_not_found
+        book = await cls.get_book_by_id(session, book_id)
 
         book_dict = book_update.model_dump(exclude_unset=True)
         if book_update.authors:
@@ -62,12 +59,12 @@ class BookService:
     async def get_book_by_id(cls, session: AsyncSession, book_id: int) -> Book:
         book = await session.get(Book, book_id)
         if not book:
-            raise cls.book_not_found
+            raise BookNotFoundException
         return book
 
     @classmethod
     async def delete_book(cls, session: AsyncSession, book_id: int):
-        book = await session.get(Book, book_id)
+        book = await cls.get_book_by_id(session, book_id)
         await session.delete(book)
         await session.commit()
 

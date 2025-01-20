@@ -70,3 +70,16 @@ class SBook(BaseModel):
     genres: str
     available_copies: int = Field(ge=0, default=0)
     authors: conlist(SAuthor, min_length=1)
+
+
+class SBookShort(BaseModel):
+    id: int
+    title: str
+    available_copies: int = Field(ge=0, default=0)
+
+
+class SBorrowing(BaseModel):
+    borrow_date: date
+    return_date: date
+    is_returned: bool
+    book: SBookShort

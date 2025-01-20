@@ -31,6 +31,8 @@ class User(Base):
     password: Mapped[str]
     role: Mapped[UserRoleType] = mapped_column(UserRoleType, default=UserRole.READER)
 
+    borrowings: Mapped[List["Borrowing"]] = relationship(back_populates="user", cascade="all, delete")
+
     def __repr__(self) -> str:
         return f"User(id={self.id!r}, username={self.username!r}, fullname={self.fullname!r}, role={self.role!r})"
 
@@ -53,11 +55,12 @@ class Book(Base):
     genres: Mapped[str]
     available_copies: Mapped[int] = mapped_column(default=0)
 
+    borrowings: Mapped[list["Borrowing"]] = relationship(back_populates="book", cascade="all, delete-orphan")
+
     authors: Mapped[List["Author"]] = relationship(
         secondary=book_author_association,
         back_populates="books",
         lazy="selectin",
-        # cascade="all, delete"
     )
 
     def __repr__(self) -> str:
@@ -66,6 +69,7 @@ class Book(Base):
 
 class Author(Base):
     __tablename__ = "author"
+
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(50))
     biography: Mapped[Optional[str]]
@@ -76,6 +80,19 @@ class Author(Base):
     def __repr__(self) -> str:
         return f"Author(id={self.id!r}, name={self.name!r}, birth_date={self.birth_date!r},)"
 
+
+class Borrowing(Base):
+    __tablename__ = "borrowing"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("user_account.id"), nullable=False)
+    book_id: Mapped[int] = mapped_column(ForeignKey("book.id"), nullable=False)
+    borrow_date: Mapped[date]
+    return_date: Mapped[date]
+    is_returned: Mapped[bool] = mapped_column(default=False)
+
+    user: Mapped[User] = relationship(back_populates="borrowings")
+    book: Mapped[Book] = relationship(back_populates="borrowings", lazy="selectin")
 
 
 
