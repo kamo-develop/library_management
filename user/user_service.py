@@ -1,12 +1,11 @@
-from typing import Annotated
-from fastapi import Depends, HTTPException, status
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, delete
 import logging
-from jose import JWTError, jwt
+
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from config import settings
 from exceptions import UserNotFoundException
-from models import User
+from models import User, UserRole
 from schemas import SUserRegister, SUserUpdate
 from utils import copy_model_attributes
 from .security import get_password_hash, verify_password
@@ -56,4 +55,5 @@ class UserService:
         if not user or not verify_password(password, user.password):
             return None
         return user
+
 

@@ -1,11 +1,4 @@
-from typing import Any
-
-from environs import Env
-from pydantic import PostgresDsn
 from pydantic_settings import BaseSettings, SettingsConfigDict
-
-env = Env()
-env.read_env(".env")
 
 
 class Settings(BaseSettings):
@@ -24,6 +17,9 @@ class Settings(BaseSettings):
     SECRET_KEY: str
     ALGORITHM: str
     ACCESS_TOKEN_EXPIRE_MINUTES: int
+
+    FIRST_SUPERUSER: str
+    FIRST_SUPERUSER_PASSWORD: str
 
 
 settings = Settings()
