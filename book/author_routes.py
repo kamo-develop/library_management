@@ -1,11 +1,8 @@
-from typing import Annotated
-
-from fastapi import APIRouter, HTTPException, status, Depends
 import logging
-from sqlalchemy.ext.asyncio import AsyncSession
+
+from fastapi import APIRouter, Query
 
 from deps import SessionDep, CurrentUserDep
-from models import UserRole
 from schemas import SAuthorCreate, SAuthor, SAuthorUpdate
 from user.role_checker import AdminOnlyAccess
 from .author_service import AuthorService
@@ -50,3 +47,13 @@ async def delete_author(
         session: SessionDep
 ):
     return await AuthorService.delete_author(session, author_id)
+
+
+@router.get("/")
+async def get_all_authors(
+        session: SessionDep,
+        _: CurrentUserDep,
+        limit: int = Query(100, ge=0),
+        offset: int = Query(0, ge=0)
+) -> list[SAuthor]:
+    return await AuthorService.get_all_authors(session, limit, offset)

@@ -1,10 +1,9 @@
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, delete
 
 from exceptions import AuthorNotFoundException
 from models import Author
 from schemas import SAuthorCreate, SAuthorUpdate
-from fastapi import HTTPException, status
 from utils import copy_model_attributes
 
 
@@ -42,4 +41,8 @@ class AuthorService:
         author = await cls.get_author_by_id(session, author_id)
         await session.delete(author)
         await session.commit()
+
+    @classmethod
+    async def get_all_authors(cls, session: AsyncSession, limit: int, offset: int):
+        return await session.scalars(select(Author).limit(limit).offset(offset))
 

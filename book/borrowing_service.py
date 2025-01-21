@@ -1,13 +1,12 @@
 import logging
 from datetime import date, timedelta
 
-from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, and_, func
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from exceptions import BookNotFoundException, BookNotAvailableException, LimitBorrowingException, \
     BorrowingNotFoundException
 from models import User, Book, Borrowing
-from fastapi import HTTPException, status
 
 logger = logging.getLogger(__name__)
 
@@ -65,10 +64,7 @@ class BorrowingService:
 
 
     @classmethod
-    async def get_all_borrowing_for_user(cls, session: AsyncSession, user: User) -> list[Borrowing]:
-        borrowings = (
-            await session.execute(
-                select(Borrowing).where(and_(Borrowing.user_id == user.id, Borrowing.is_returned == False))
-            )
-        ).scalars().all()
-        return borrowings
+    async def get_all_borrowing_for_user(cls, session: AsyncSession, user: User):
+        return await session.scalars(
+            select(Borrowing).where(and_(Borrowing.user_id == user.id, Borrowing.is_returned == False))
+        )

@@ -15,9 +15,9 @@ logger = logging.getLogger(__name__)
 
 class UserService:
     @classmethod
-    async def get_all_users(cls, session: AsyncSession) -> list[User]:
+    async def get_all_users(cls, session: AsyncSession, limit: int, offset: int):
         """Возвращает всех пользователей"""
-        return (await session.execute(select(User))).scalars().all()
+        return await session.scalars(select(User).limit(limit).offset(offset))
 
     @classmethod
     async def get_user_by_username(cls, session: AsyncSession, username) -> User:

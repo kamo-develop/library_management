@@ -44,6 +44,10 @@ class SAuthor(BaseModel):
     birth_date: date
 
 
+class SAuthorShort(BaseModel):
+    name: str = Field(max_length=50)
+
+
 class SBookCreate(BaseModel):
     title: str
     description: str | None = None
@@ -76,6 +80,7 @@ class SBookShort(BaseModel):
     id: int
     title: str
     available_copies: int = Field(ge=0, default=0)
+    authors: conlist(SAuthorShort, min_length=1)
 
 
 class SBorrowing(BaseModel):

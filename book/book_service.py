@@ -1,22 +1,17 @@
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, delete
+import logging
 
-from exceptions import BookNotFoundException
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from exceptions import BookNotFoundException, AuthorNotFoundException
 from models import Author, Book
 from schemas import SBookCreate, SBookUpdate
-from fastapi import HTTPException, status
-import logging
 from utils import copy_model_attributes
 
 logger = logging.getLogger(__name__)
 
 
 class BookService:
-
-    authors_not_found = HTTPException(
-        status_code=status.HTTP_404_NOT_FOUND,
-        detail="No author was found"
-    )
 
     @classmethod
     async def create_book(cls, session: AsyncSession, book_create: SBookCreate) -> Book:
@@ -27,7 +22,7 @@ class BookService:
         new_book = Book(**book_dict)
         authors = (await session.execute(select(Author).where(Author.id.in_(authors_ids)))).scalars().all()
         if not authors:
-            raise cls.authors_not_found
+            raise AuthorNotFoundException
         new_book.authors = authors
 
         session.add(new_book)
@@ -44,7 +39,7 @@ class BookService:
             authors_ids = book_dict['authors']
             authors = (await session.execute(select(Author).where(Author.id.in_(authors_ids)))).scalars().all()
             if not authors:
-                raise cls.authors_not_found
+                raise AuthorNotFoundException
             book.authors = authors
 
         if 'authors' in book_dict:
@@ -67,6 +62,11 @@ class BookService:
         book = await cls.get_book_by_id(session, book_id)
         await session.delete(book)
         await session.commit()
+
+
+    @classmethod
+    async def get_all_books(cls, session: AsyncSession, limit: int, offset: int):
+        return await session.scalars(select(Book).limit(limit).offset(offset))
 
 
 

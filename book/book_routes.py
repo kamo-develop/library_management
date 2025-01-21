@@ -1,12 +1,11 @@
 import logging
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Query
 
 from deps import SessionDep, CurrentUserDep
-from schemas import SBookCreate, SBook, SBookUpdate
+from schemas import SBookCreate, SBook, SBookUpdate, SBookShort
 from user.role_checker import AdminOnlyAccess
 from .book_service import BookService
-from .borrowing_service import BorrowingService
 
 logger = logging.getLogger(__name__)
 
@@ -48,3 +47,13 @@ async def delete_book(
         session: SessionDep
 ):
     return await BookService.delete_book(session, book_id)
+
+
+@router.get("/")
+async def get_all_books(
+        session: SessionDep,
+        _: CurrentUserDep,
+        limit: int = Query(100, ge=0),
+        offset: int = Query(0, ge=0)
+) -> list[SBookShort]:
+    return await BookService.get_all_books(session, limit, offset)

@@ -1,5 +1,5 @@
 from typing import Annotated
-from fastapi import APIRouter, HTTPException, status, Depends
+from fastapi import APIRouter, HTTPException, status, Depends, Query
 import logging
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -67,9 +67,11 @@ async def get_user_me(
 
 @router.get("/all", dependencies=[AdminOnlyAccess])
 async def get_all_users(
-        session: SessionDep
+        session: SessionDep,
+        limit: int = Query(100, ge=0),
+        offset: int = Query(0, ge=0)
 ) -> list[SUser]:
-    return await UserService.get_all_users(session)
+    return await UserService.get_all_users(session, limit, offset)
 
 
 @router.delete("/{user_id}", dependencies=[AdminOnlyAccess])
