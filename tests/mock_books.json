@@ -29,7 +29,19 @@
     "genres": "Русская классика",
     "available_copies": 1,
     "authors": [
-      2
+      4
+    ]
+  },
+  {
+    "id": 4,
+    "title": "Мертвые души",
+    "description": "",
+    "publication_date": "1839-04-21",
+    "genres": "Русская классика",
+    "available_copies": 1,
+    "authors": [
+      3
     ]
   }
+
 ]
