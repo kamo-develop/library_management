@@ -1,0 +1,23 @@
+[
+  {
+    "id": 1,
+    "username": "admin",
+    "fullname": "administrator",
+    "password": "$2b$12$/QghSxB0ezWRJMd71/VpROIWDsNkwpGhueCW4zc./gxu7w.LQcVWG",
+    "role": "ADMIN"
+  },
+  {
+    "id": 2,
+    "username": "Ivan",
+    "fullname": "Ivan Petrov",
+    "password": "$2b$12$bkO.PZ/fx3lN48JQD/Z55..UFQXuIAmaX5Q15X1EbqEcDaqKfNsQu",
+    "role": "READER"
+  },
+  {
+    "id": 3,
+    "username": "Alexey",
+    "fullname": "",
+    "password": "$2b$12$vPBy3vubKqN/Ugauvb6q9.vqaT2WLWeRF03jYRbAxqlwSlaBDRpDK",
+    "role": "READER"
+  }
+]

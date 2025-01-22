@@ -1,3 +1,5 @@
+from typing import Literal
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -8,11 +10,19 @@ class Settings(BaseSettings):
         extra="ignore",
     )
 
+    MODE: Literal["DEV", "TEST", "PROD"]
+
     PG_SERVER: str = ""
     PG_PORT: int = 5432
     PG_USER: str = ""
     PG_PASSWORD: str
     PG_DATABASE: str
+
+    TEST_PG_SERVER: str = ""
+    TEST_PG_PORT: int = 5432
+    TEST_PG_USER: str = ""
+    TEST_PG_PASSWORD: str
+    TEST_PG_DATABASE: str
 
     SECRET_KEY: str
     ALGORITHM: str

@@ -55,7 +55,7 @@ class Book(Base):
     genres: Mapped[str]
     available_copies: Mapped[int] = mapped_column(default=0)
 
-    borrowings: Mapped[list["Borrowing"]] = relationship(back_populates="book", cascade="all, delete-orphan")
+    borrowings: Mapped[list["Borrowing"]] = relationship(back_populates="book", cascade="all, delete")
 
     authors: Mapped[List["Author"]] = relationship(
         secondary=book_author_association,
@@ -64,7 +64,7 @@ class Book(Base):
     )
 
     def __repr__(self) -> str:
-        return f"Author(id={self.id!r}, name={self.name!r}, birth_date={self.birth_date!r},)"
+        return f"Book(id={self.id!r}, title={self.title!r}, available_copies={self.available_copies!r},)"
 
 
 class Author(Base):
@@ -75,7 +75,7 @@ class Author(Base):
     biography: Mapped[Optional[str]]
     birth_date: Mapped[date] = mapped_column(Date)
 
-    books: Mapped[List[Book]] = relationship(secondary=book_author_association, back_populates="authors")
+    books: Mapped[List[Book]] = relationship(secondary=book_author_association, back_populates="authors", passive_deletes=True)
 
     def __repr__(self) -> str:
         return f"Author(id={self.id!r}, name={self.name!r}, birth_date={self.birth_date!r},)"

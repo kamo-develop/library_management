@@ -1,15 +1,16 @@
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-
-from exceptions import AuthorNotFoundException
+from asyncpg.exceptions import ForeignKeyViolationError
+from sqlalchemy.exc import IntegrityError
+from exceptions import AuthorNotFoundException, AuthorHasBookException
 from models import Author
 from schemas import SAuthorCreate, SAuthorUpdate
 from utils import copy_model_attributes
+import logging
 
+logger = logging.getLogger(__name__)
 
 class AuthorService:
-
-
 
     @classmethod
     async def create_author(cls, session: AsyncSession, author_create: SAuthorCreate) -> Author:
@@ -38,9 +39,13 @@ class AuthorService:
 
     @classmethod
     async def delete_author(cls, session: AsyncSession, author_id: int):
-        author = await cls.get_author_by_id(session, author_id)
-        await session.delete(author)
-        await session.commit()
+        try:
+            author = await cls.get_author_by_id(session, author_id)
+            await session.delete(author)
+            await session.commit()
+        except IntegrityError as e:
+            logger.warning(e)
+            raise AuthorHasBookException
 
     @classmethod
     async def get_all_authors(cls, session: AsyncSession, limit: int, offset: int):

@@ -25,6 +25,10 @@ AuthorNotFoundException = HTTPException(
     detail="Author not found"
 )
 
+AuthorHasBookException = HTTPException(
+    status_code=status.HTTP_409_CONFLICT,
+    detail="It is not possible to delete the author because he has a book."
+)
 
 UserNotFoundException = HTTPException(
     status_code=status.HTTP_401_UNAUTHORIZED,
