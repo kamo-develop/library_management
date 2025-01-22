@@ -63,4 +63,3 @@ async def test_get_book(book_id, title, status_code, auth_reader_ac: AsyncClient
 async def test_delete_book(book_id, status_code, auth_admin_ac: AsyncClient):
     response = await auth_admin_ac.delete(f"/book/{book_id}")
     assert response.status_code == status_code
-

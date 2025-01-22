@@ -73,8 +73,22 @@ class BookService:
 
 
     @classmethod
-    async def get_all_books(cls, session: AsyncSession, limit: int, offset: int):
-        return await session.scalars(select(Book).limit(limit).offset(offset))
+    async def get_all_books(cls, session: AsyncSession, limit: int, offset: int,
+                authors_ids: list[int] = None, available_copies_min: int = None, available_copies_max: int = None
+    ):
+        stmt = select(Book)
+
+        # Фильтрация по авторам
+        if authors_ids:
+            stmt = stmt.join(Author, Book.authors).where(Author.id.in_(authors_ids))
+
+        # Фильтрмация по количеству доступных экземпляров
+        if available_copies_min is not None:
+            stmt = stmt.where(Book.available_copies >= available_copies_min)
+        if available_copies_max is not None:
+            stmt = stmt.where(Book.available_copies <= available_copies_max)
+
+        return await session.scalars(stmt.limit(limit).offset(offset))
 
 
 

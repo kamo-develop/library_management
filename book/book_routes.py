@@ -53,7 +53,10 @@ async def delete_book(
 async def get_all_books(
         session: SessionDep,
         _: CurrentUserDep,
+        authors: list[int] = Query(default=None),
+        available_copies_min: int = Query(None, ge=0),
+        available_copies_max: int = Query(None, ge=0),
         limit: int = Query(100, ge=0),
         offset: int = Query(0, ge=0)
 ) -> list[SBookShort]:
-    return await BookService.get_all_books(session, limit, offset)
+    return await BookService.get_all_books(session, limit, offset, authors, available_copies_min, available_copies_max)

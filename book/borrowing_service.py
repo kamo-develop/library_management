@@ -27,11 +27,11 @@ class BorrowingService:
             raise BookNotAvailableException
 
         # Подсчёт количества книг на руках у читателя в данный момент
-        count_borrowing = (
-            await session.execute(
-                select(func.count("*")).where(and_(Borrowing.user_id == user.id, Borrowing.is_returned == False))
+        count_borrowing = await session.scalar(
+            select(func.count("*")).where(
+                and_(Borrowing.user_id == user.id, Borrowing.is_returned == False)
             )
-        ).scalar()
+        )
         if count_borrowing >= cls.MAX_BORROWED_BOOKS:
             logger.info(f"The number of borrowed books has exceeded the limit for user {user}")
             raise LimitBorrowingException
@@ -54,11 +54,11 @@ class BorrowingService:
     @classmethod
     async def return_book(cls, session: AsyncSession, user: User, book_id: int) -> Borrowing:
         # Поиск записи о выданной книге
-        borrowing = (
-            await session.execute(
-                select(Borrowing).where(and_(Borrowing.user_id == user.id, Borrowing.book_id == book_id, Borrowing.is_returned == False))
+        borrowing = await session.scalar(
+            select(Borrowing).where(
+                and_(Borrowing.user_id == user.id, Borrowing.book_id == book_id, Borrowing.is_returned == False)
             )
-        ).scalar()
+        )
         if not borrowing:
             logger.info(f"Book borrowing book {book_id} not found for user {user}")
             raise BorrowingNotFoundException
