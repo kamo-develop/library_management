@@ -5,6 +5,7 @@ from models import UserRole
 
 
 class RoleChecker:
+    """Для проверки наличия прав доступа к эндпоинту"""
     def __init__(self, allowed_roles):
         self.allowed_roles = allowed_roles
 

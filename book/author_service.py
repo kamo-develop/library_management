@@ -19,6 +19,7 @@ class AuthorService:
         session.add(new_author)
         await session.commit()
         await session.refresh(new_author)
+        logger.info(f"Created new author: {new_author}")
         return new_author
 
     @classmethod
@@ -28,6 +29,7 @@ class AuthorService:
         copy_model_attributes(data=author_dict, model_to=author)
         await session.commit()
         await session.refresh(author)
+        logger.info(f"Updated author: {author}")
         return author
 
     @classmethod
@@ -43,6 +45,7 @@ class AuthorService:
             author = await cls.get_author_by_id(session, author_id)
             await session.delete(author)
             await session.commit()
+            logger.info(f"Deleted author with id={author_id}")
         except IntegrityError as e:
             logger.warning(e)
             raise AuthorHasBookException

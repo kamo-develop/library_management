@@ -17,37 +17,44 @@ class BookService:
     async def create_book(cls, session: AsyncSession, book_create: SBookCreate) -> Book:
         book_dict = book_create.model_dump(exclude_unset=True)
         authors_ids = book_dict['authors']
-        book_dict.pop('authors')
+        book_dict.pop('authors')    # Исключить authors, чтобы корректно создать Book
 
         new_book = Book(**book_dict)
+
+        # Поиск авторов по списку их id
         authors = (await session.execute(select(Author).where(Author.id.in_(authors_ids)))).scalars().all()
         if not authors:
+            logger.info(f"No author has been found for new book {book_create.title}")
             raise AuthorNotFoundException
         new_book.authors = authors
 
         session.add(new_book)
         await session.commit()
         await session.refresh(new_book)
+        logger.info(f"Created new book: {new_book}")
         return new_book
 
     @classmethod
     async def update_book(cls, session: AsyncSession, book_id: int, book_update: SBookUpdate) -> Book:
         book = await cls.get_book_by_id(session, book_id)
-
         book_dict = book_update.model_dump(exclude_unset=True)
         if book_update.authors:
+            # Поиск авторов по списку их id
             authors_ids = book_dict['authors']
             authors = (await session.execute(select(Author).where(Author.id.in_(authors_ids)))).scalars().all()
             if not authors:
+                logger.info(f"No author has been found for new book {book_update.title}")
                 raise AuthorNotFoundException
             book.authors = authors
 
         if 'authors' in book_dict:
+            # Исключить authors, чтобы корректно создать Book
             book_dict.pop('authors')
         copy_model_attributes(data=book_dict, model_to=book)
 
         await session.commit()
         await session.refresh(book)
+        logger.info(f"Updated book: {book}")
         return book
 
     @classmethod
@@ -62,6 +69,7 @@ class BookService:
         book = await cls.get_book_by_id(session, book_id)
         await session.delete(book)
         await session.commit()
+        logger.info(f"Deleted book with id={book_id}")
 
 
     @classmethod

@@ -41,7 +41,7 @@ async def test_update_author(auth_admin_ac: AsyncClient):
 
 
 @pytest.mark.parametrize("author_id, name, status_code", [
-    (10, None, status.HTTP_404_NOT_FOUND),
+    (10, None, status.HTTP_404_NOT_FOUND),      # Попытка получить отсутствующего в бд автора
     (1, "Джейн Остин", status.HTTP_200_OK),
     ("abc", None, status.HTTP_422_UNPROCESSABLE_ENTITY)
 ])

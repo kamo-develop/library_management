@@ -16,13 +16,13 @@ logger = logging.getLogger(__name__)
 class UserService:
     @classmethod
     async def get_all_users(cls, session: AsyncSession, limit: int, offset: int):
-        """Возвращает всех пользователей"""
+        # Поиск всех пользователей
         return await session.scalars(select(User).limit(limit).offset(offset))
 
     @classmethod
     async def get_user_by_username(cls, session: AsyncSession, username) -> User:
-        """Ищет пользователя по логину"""
-        return (await session.execute(select(User).filter(User.username == username))).scalars().first()
+        # Поиск пользователя по имени
+        return await session.scalar(select(User).filter(User.username == username))
 
     @classmethod
     async def create_user(cls, session: AsyncSession, user_register: SUserRegister) -> User:
@@ -31,6 +31,7 @@ class UserService:
         session.add(new_user)
         await session.commit()
         await session.refresh(new_user)
+        logger.info(f"Created new user: {new_user}")
         return new_user
 
     @classmethod
@@ -39,6 +40,7 @@ class UserService:
         copy_model_attributes(data=user_dict, model_to=user)
         await session.commit()
         await session.refresh(user)
+        logger.info(f"Updated user: {user}")
         return user
 
     @classmethod
@@ -48,12 +50,14 @@ class UserService:
             raise UserNotFoundException
         await session.delete(user)
         await session.commit()
+        logger.info(f"Deleted user with id={user_id}")
 
     @classmethod
     async def authenticate_user(cls, session: AsyncSession, username, password) -> User | None:
         user = await cls.get_user_by_username(session, username)
         if not user or not verify_password(password, user.password):
             return None
+        logger.info(f"Authenticate user: {user}")
         return user
 
 

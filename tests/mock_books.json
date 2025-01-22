@@ -34,13 +34,13 @@
   },
   {
     "id": 4,
-    "title": "Мертвые души",
+    "title": "Дракула",
     "description": "",
-    "publication_date": "1839-04-21",
-    "genres": "Русская классика",
+    "publication_date": "1877-04-21",
+    "genres": "Ужасы",
     "available_copies": 1,
     "authors": [
-      3
+      5
     ]
   }
 

@@ -11,7 +11,7 @@ from user.user_service import UserService
 import logging
 import uvicorn
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 app = FastAPI()
