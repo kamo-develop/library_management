@@ -58,13 +58,13 @@ async def prepare_database():
         await session.commit()
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope="module")
 async def ac():
     async with AsyncClient(transport=ASGITransport(app=fastapi_app), base_url="http://test") as ac:
         yield ac
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="module")
 async def auth_admin_ac():
     async with AsyncClient(transport=ASGITransport(app=fastapi_app), base_url="http://test") as ac:
         response = await ac.post("/user/login", data={
@@ -76,7 +76,7 @@ async def auth_admin_ac():
         yield ac
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="module")
 async def auth_reader_ac():
     async with AsyncClient(transport=ASGITransport(app=fastapi_app), base_url="http://test") as ac:
         response = await ac.post("/user/login", data={

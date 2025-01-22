@@ -1,28 +1,28 @@
 version: '3.7'
 
 services:
-  app:
+  test_app:
     build:
       context: .
-    container_name: library_app
+    container_name: library_test_app
     volumes:
       - ./pgdata:/var/lib/postgresql/data/pgdata
     env_file:
       - .env.dist
     depends_on:
-      - db
+      - test_db
     ports:
       - 8000:8000
-    command: bash -c "alembic upgrade head && python -m init_db && python -m main"
-  db:
+    command: bash -c "pytest tests/ -v"
+  test_db:
     image: postgres:17.2-alpine
-    container_name: library_db
+    container_name: library_test_db
     ports:
       - 5431:5432
     environment:
       - POSTGRES_USER=super_admin
       - POSTGRES_PASSWORD=super_pass12345
-      - POSTGRES_DB=library_management
+      - POSTGRES_DB=test_library_management
 volumes:
   pgdata:
     driver: local
